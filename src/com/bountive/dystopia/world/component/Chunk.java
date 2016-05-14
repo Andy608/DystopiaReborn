@@ -11,7 +11,7 @@ public class Chunk {
 	private EnumQuadrant quadrant;
 	
 	public Chunk(int x, int z) {
-		tileIDs = new byte[16][16];
+		tileIDs = new byte[CHUNK_SIZE][CHUNK_SIZE];
 		chunkX = x;
 		chunkZ = z;
 		
@@ -21,52 +21,24 @@ public class Chunk {
 				tileIDs[b][h] = 0;
 			}
 		}
-		safetyLevel = EnumSafetyLevel.LEVEL_1;
-		quadrant = EnumQuadrant.QUADRANT_1;
+		safetyLevel = EnumSafetyLevel.LEVEL_1;//TODO: CHANGE THIS
+		quadrant = EnumQuadrant.getQuadrant(x, z);
 	}
 	
-	/**
-	 * Returns the X distance between chunks.
-	 * If the two chunks are in the same quadrant then simple subtraction can be used. (Absolute value is used in case we subtract a smaller coordinate by a larger one).
-	 * It is okay to subtract the x coordinates if the quadrants are 1 & 4 or 2 & 3 because that does not effect the x distance.
-	 * 
-	 * If the chunks are in quadrants 1 & 3 or 2 & 4 or 1 & 2 or 3 & 4 then we need to add the coordinates together because the coordinates cross over the axis and there are no negatives so it allows us to add.
-	 * 		Because there are two zero values from crossing the axis, we need to add 1 to compensate.
-	 * @param otherQuadrant : The quadrant of the other chunk.
-	 * @param otherChunkZ : The z coordinate in chunk space of the other chunk.
-	 * @return : The z distance between the two chunks.
-	 */
-	public int getDistanceX(EnumQuadrant otherQuadrant, int otherChunkX) {
-		if (quadrant == otherQuadrant 
-		|| (quadrant == EnumQuadrant.QUADRANT_1 && otherQuadrant == EnumQuadrant.QUADRANT_4)
-		|| (quadrant == EnumQuadrant.QUADRANT_2 && otherQuadrant == EnumQuadrant.QUADRANT_3)) {
-			return Math.abs(otherChunkX - chunkX);
-		}
-		else {
-			return otherChunkX + chunkX + 1;
-		}
+	public Chunk(int x, int z, EnumSafetyLevel level, byte[][] tiles) {
+		chunkX = x;
+		chunkZ = z;
+		quadrant = EnumQuadrant.getQuadrant(x, z);
+		safetyLevel = level;
+		tileIDs = tiles;
 	}
 	
-	/**
-	 * Returns the Z distance between chunks.
-	 * If the two chunks are in the same quadrant then simple subtraction can be used. (Absolute value is used in case we subtract a smaller coordinate by a larger one).
-	 * It is okay to subtract the z coordinates if the quadrants are 1 & 2 or 3 & 4 because that does not effect the z distance.
-	 * 
-	 * If the chunks are in quadrants 1 & 3 or 2 & 4 or 1 & 4 or 2 & 3 then we need to add the coordinates together because the coordinates cross over the axis and there are no negatives so it allows us to add.
-	 * 		Because there are two zero values from crossing the axis, we need to add 1 to compensate.
-	 * @param otherQuadrant : The quadrant of the other chunk.
-	 * @param otherChunkZ : The z coordinate in chunk space of the other chunk.
-	 * @return : The z distance between the two chunks.
-	 */
-	public int getDistanceZ(EnumQuadrant otherQuadrant, int otherChunkZ) {
-		if (quadrant == otherQuadrant
-		|| (quadrant == EnumQuadrant.QUADRANT_1 && otherQuadrant == EnumQuadrant.QUADRANT_2)
-		|| (quadrant == EnumQuadrant.QUADRANT_3 && otherQuadrant == EnumQuadrant.QUADRANT_4)) {
-			return Math.abs(otherChunkZ - chunkZ);
-		}
-		else {
-			return otherChunkZ + chunkZ + 1;
-		}
+	public int getDistanceX(int otherChunkX) {
+		return Math.abs(otherChunkX - chunkX);
+	}
+	
+	public int getDistanceZ(int otherChunkZ) {
+		return Math.abs(otherChunkZ - chunkZ);
 	}
 	
 	/**
@@ -77,8 +49,8 @@ public class Chunk {
 	 * @return : The radial distance of the desired chunk.
 	 */
 	public int getRadialDistance(EnumQuadrant otherQuadrant, int otherChunkX, int otherChunkZ) {
-		int xDistance = getDistanceX(otherQuadrant, otherChunkX);
-		int zDistance = getDistanceZ(otherQuadrant, otherChunkZ);
+		int xDistance = getDistanceX(otherChunkX);
+		int zDistance = getDistanceZ(otherChunkZ);
 		
 		if (xDistance > zDistance) {
 			return xDistance;
@@ -135,12 +107,5 @@ public class Chunk {
 		LEVEL_3,
 		LEVEL_4,
 		LEVEL_5;
-	}
-	
-	public enum EnumQuadrant {
-		QUADRANT_1,
-		QUADRANT_2,
-		QUADRANT_3,
-		QUADRANT_4;
 	}
 }

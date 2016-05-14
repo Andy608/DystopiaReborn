@@ -19,7 +19,6 @@ import com.bountive.dystopia.model.util.ModelResourceManager;
 import com.bountive.dystopia.texture.SpriteSheetList;
 import com.bountive.dystopia.texture.SpriteSheetManager;
 import com.bountive.dystopia.tile.TileList;
-import com.bountive.dystopia.world.TestRenderer;
 import com.bountive.dystopia.world.World;
 
 public class Dystopia {
@@ -72,6 +71,7 @@ public class Dystopia {
 		} catch (Exception e) {
 			LoggerUtil.logError(getClass(), e);
 		} finally {
+			currentWorld.getSaveHandler().save(currentWorld);
 			Window.save();
 			FileResourceTracker.releaseResource(ModelResourceManager.getInstance());
 			FileResourceTracker.releaseProgramResources();
@@ -84,7 +84,7 @@ public class Dystopia {
 //	private Camera camera;
 //	private WorldShader shader;
 //	private Matrix4f transformationMatrix;
-	private TestRenderer testRenderer;
+//	private TestRenderer testRenderer;
 	private World currentWorld;
 	/////////////////////////////
 	
@@ -93,7 +93,7 @@ public class Dystopia {
 		//TESTING WILL BE REMOVED
 //		camera = new FreeRoamCamera(new Vector3f(50, 1, 50), new Vector3f(40, 0, 0));
 //		shader = new WorldShader();
-		testRenderer = new TestRenderer();
+//		testRenderer = new TestRenderer();
 		currentWorld = new World("Test World");
 //		transformationMatrix = new Matrix4f();
 		CursorPosCallback.centerMouse();
@@ -148,7 +148,8 @@ public class Dystopia {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-		testRenderer.render(currentWorld);
+//		testRenderer.render(currentWorld);
+		currentWorld.render(lerp);
 		GLFW.glfwSwapBuffers(Window.getID());
 	}
 	

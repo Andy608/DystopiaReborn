@@ -44,6 +44,7 @@ public class FileResourceLocation {
 		PNG(".png"),
 		VS(".vs"),
 		FS(".fs"),
+		DAT(".dat"),
 		PROPERTIES(".bss");//Bountive Studio Settings
 		
 		String extension;
