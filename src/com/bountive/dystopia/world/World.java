@@ -13,10 +13,6 @@ import com.bountive.dystopia.world.component.WorldSaveHandler;
 public class World {
 
 	//TODO: EXPAND ON THIS - World.class
-	//Create 'chunks' or zones to handle different tiles.
-	//Design a saving and loading system for worlds.
-	//Create a new custom renderer that takes in a world and draws tiles based on the saved world and draws different images depending on the tile and biome.
-	
 	//Add the usual worldy things in this class like the camera and the player and stuff.
 	//Maybe add a world generator.
 	

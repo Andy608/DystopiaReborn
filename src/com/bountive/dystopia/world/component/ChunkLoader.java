@@ -28,14 +28,9 @@ public class ChunkLoader {
 	public ArrayList<Chunk> cleanQueue(ChunkSaver chunkSaver, EnumQuadrant quadrant, int chunkX, int chunkZ) {
 		//Step1. Get the render distance.
 		int renderDistance = ProgramSettings.getCustomRenderDistance();
-		//Step2. For all the chunks in loadedChunks, check if they are in range from the current chunk passed in.
 		removedChunks.clear();
 		
-//		for (Chunk c : loadedChunks) {
-//			removedChunks.add(c);
-//		}
-		
-//		loadedChunks.clear();
+		//Step2. For all the chunks in loadedChunks, check if they are in range from the current chunk passed in.
 		for (int i = 0; i < loadedChunks.size(); i++) {
 			Chunk c = loadedChunks.get(i);
 			
@@ -46,18 +41,11 @@ public class ChunkLoader {
 				loadedChunks.remove(i);
 				LoggerUtil.logInfo(getClass(), "Removing Chunk: (" + c.getChunkX() + ", " + c.getChunkZ() + ") from index: " + i);
 				i--;
-				//TODO: TEST
 			}
 		}
 		
 		//Step5. Save the removed chunks to the save file.
-		
-		//TODO: FIX THIS
 		chunkSaver.saveChunks(removedChunks);
-		//Saturday: Save chunks in world file!
-		//Glitch where it is saving the chunks into folders.
-		
-		
 		
 		//Step6. Return removedChunks.
 		return removedChunks;
@@ -97,11 +85,8 @@ public class ChunkLoader {
 	}
 	
 	private boolean isChunkLoaded(EnumQuadrant newQuadrant, int newChunkX, int newChunkZ) {
-		
 		for (Chunk c : loadedChunks) {
-			
 //			System.out.println(c.getChunkX() + " " + c.getChunkZ() + " | " + newChunkX + " " + newChunkZ);
-			
 			if (c.isChunk(newQuadrant, newChunkX, newChunkZ)) {
 //				LoggerUtil.logInfo(getClass(), "Chunk is already loaded: Quadrant: " + c.getQuadrant() + "(" + newChunkX + ", " + newChunkZ + ")");
 				return true;
@@ -169,5 +154,4 @@ public class ChunkLoader {
 			return false;
 		}
 	}
-	
 }
