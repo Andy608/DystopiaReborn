@@ -99,8 +99,11 @@ public class ChunkLoader {
 	}
 	
 	public boolean loadedChunkFromFile(WorldChunkManager manager, EnumQuadrant quadrant, int chunkX, int chunkZ) {
-		FileResourceLocation chunkFile = new FileResourceLocation(manager.LEVEL, quadrant.toString(), EnumFileExtension.DAT);
-		File location = new File(chunkFile.getFullPath());
+		int regionX = EnumQuadrant.convertXBasedOnQuadrant(quadrant, chunkX, manager.REGION_SIZE);
+		int regionZ = EnumQuadrant.convertZBasedOnQuadrant(quadrant, chunkZ, manager.REGION_SIZE);
+		
+		FileResourceLocation regionFile = new FileResourceLocation(manager.LEVEL, regionX + "_" + regionZ, EnumFileExtension.DAT);
+		File location = new File(regionFile.getFullPath());
 		
 		if (location.exists()) {
 			Chunk newChunk = null;
@@ -139,8 +142,8 @@ public class ChunkLoader {
 					}
 				}
 			} catch (FileNotFoundException e) {
-				if (chunkFile.getFullPath() != null) {
-					LoggerUtil.logError(getClass(), "File: " + chunkFile.getFullPath() + " could not be found.", e);
+				if (regionFile.getFullPath() != null) {
+					LoggerUtil.logError(getClass(), "File: " + regionFile.getFullPath() + " could not be found.", e);
 				}
 				else {
 					LoggerUtil.logError(getClass(), "File path is null.", e);
@@ -151,45 +154,6 @@ public class ChunkLoader {
 				LoggerUtil.logError(getClass(), e);
 			}
 		}
-		
 		return false;
-		
-//		if (location.exists()) {
-//			Chunk newChunk = null;
-//			
-//			try (DataInputStream is = new DataInputStream(new FileInputStream(location));) {
-//				int newChunkX = is.readInt();
-//				int newChunkZ = is.readInt();
-//				EnumSafetyLevel newLevel = EnumSafetyLevel.values()[is.readByte()];
-//				byte[][] tiles = new byte[Chunk.CHUNK_SIZE][Chunk.CHUNK_SIZE];
-//				
-//				for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-//					for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-//						tiles[x][z] = is.readByte();
-//					}
-//				}
-//				newChunk = new Chunk(newChunkX, newChunkZ, newLevel, tiles);
-//				LoggerUtil.logInfo(getClass(), "Adding old chunk to chunkLoader: (" + newChunk.getChunkX() + ", " + newChunk.getChunkZ() + ")");
-//				loadedChunks.add(newChunk);
-//				
-//			} catch (FileNotFoundException e) {
-//				if (chunkFile != null) {
-//					LoggerUtil.logError(getClass(), "File: " + chunkFile.getFullPath() + " could not be found.", e);
-//				}
-//				else {
-//					LoggerUtil.logError(getClass(), "File path is null.", e);
-//				}
-//			} catch (EOFException e) {
-//				LoggerUtil.logError(getClass(), "DataInputStream has reached the end of the file.", e);
-//			} catch (IOException e) {
-//				LoggerUtil.logError(getClass(), e);
-//			}
-//			
-//			LoggerUtil.logInfo(getClass(), "Loaded chunk from file.");
-//			return true;
-//		}
-//		else {
-//			return false;
-//		}
 	}
 }

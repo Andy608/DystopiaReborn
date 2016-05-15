@@ -18,6 +18,24 @@ public enum EnumQuadrant {
 		return quadrantName;
 	}
 	
+	public static int convertXBasedOnQuadrant(EnumQuadrant quadrant, int xValue, int divisor) {
+		if (quadrant == EnumQuadrant.QUADRANT_1 || quadrant == EnumQuadrant.QUADRANT_4) {
+			return xValue / divisor;
+		}
+		else {
+			return (xValue - divisor) / divisor;
+		}
+	}
+	
+	public static int convertZBasedOnQuadrant(EnumQuadrant quadrant, int zValue, int divisor) {
+		if (quadrant == EnumQuadrant.QUADRANT_1 || quadrant == EnumQuadrant.QUADRANT_2) {
+			return zValue / divisor;
+		}
+		else {
+			return (zValue - divisor) / divisor;
+		}
+	}
+	
 	public static EnumQuadrant getQuadrant(int x, int z) {
 		if (x >= 0 && z >= 0) {
 			return EnumQuadrant.QUADRANT_1;

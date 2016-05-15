@@ -15,6 +15,7 @@ public class WorldChunkManager extends Thread {
 	
 	public final ResourceDirectory LEVEL;
 	public final int CHUNK_BYTE_LENGTH;
+	public final int REGION_SIZE;
 	
 	private volatile ChunkLoader chunkLoader;
 	private volatile ChunkSaver chunkSaver;
@@ -28,6 +29,7 @@ public class WorldChunkManager extends Thread {
 		
 		LEVEL = new ResourceDirectory(worldDirectory.getFullDirectory(), "level", false);
 		CHUNK_BYTE_LENGTH = (2 * Integer.BYTES) + 1 + Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE;
+		REGION_SIZE = 16;
 		
 		chunkLoader = new ChunkLoader();
 		chunkSaver = new ChunkSaver();
@@ -43,25 +45,8 @@ public class WorldChunkManager extends Thread {
 			
 			//Eventually we will update chunks on player action and only load new chunks when the player moves. (Maybe)
 			EnumQuadrant quadrant = EnumQuadrant.getQuadrant(playerX, playerZ);
-			
-			int chunkX, chunkZ;
-			
-			if (quadrant == EnumQuadrant.QUADRANT_1) {
-				chunkX = playerX / Chunk.CHUNK_SIZE;
-				chunkZ = playerZ / Chunk.CHUNK_SIZE;
-			}
-			else if (quadrant == EnumQuadrant.QUADRANT_2) {
-				chunkX = (playerX - Chunk.CHUNK_SIZE) / Chunk.CHUNK_SIZE;
-				chunkZ = playerZ / Chunk.CHUNK_SIZE;
-			}
-			else if (quadrant == EnumQuadrant.QUADRANT_3) {
-				chunkX = (playerX - Chunk.CHUNK_SIZE) / Chunk.CHUNK_SIZE;
-				chunkZ = (playerZ -Chunk.CHUNK_SIZE) / Chunk.CHUNK_SIZE;
-			}
-			else {
-				chunkX = playerX / Chunk.CHUNK_SIZE;
-				chunkZ = (playerZ - Chunk.CHUNK_SIZE) / Chunk.CHUNK_SIZE;
-			}
+			int chunkX = EnumQuadrant.convertXBasedOnQuadrant(quadrant, playerX, Chunk.CHUNK_SIZE);
+			int chunkZ = EnumQuadrant.convertZBasedOnQuadrant(quadrant, playerZ, Chunk.CHUNK_SIZE);
 			
 //			System.out.println(chunkX + " | " + chunkZ);
 			

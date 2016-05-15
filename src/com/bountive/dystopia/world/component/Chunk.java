@@ -10,6 +10,8 @@ public class Chunk {
 	private EnumSafetyLevel safetyLevel;
 	private EnumQuadrant quadrant;
 	
+	private boolean hasUpdated;
+	
 	public Chunk(int x, int z) {
 		tileIDs = new byte[CHUNK_SIZE][CHUNK_SIZE];
 		chunkX = x;
@@ -23,6 +25,7 @@ public class Chunk {
 		}
 		safetyLevel = EnumSafetyLevel.LEVEL_1;//TODO: CHANGE THIS
 		quadrant = EnumQuadrant.getQuadrant(x, z);
+		hasUpdated = false;
 	}
 	
 	public Chunk(int x, int z, EnumSafetyLevel level, byte[][] tiles) {
@@ -58,6 +61,10 @@ public class Chunk {
 		return zDistance;
 	}
 	
+	public void setUpdated() {
+		hasUpdated = true;
+	}
+	
 	public byte getTileID(int b, int h) {
 		return tileIDs[b][h];
 	}
@@ -80,6 +87,10 @@ public class Chunk {
 	
 	public String getSaveName() {
 		return new String(chunkX + "_" + chunkZ + "_chunk");
+	}
+	
+	public boolean hasUpdated() {
+		return hasUpdated;
 	}
 	
 	@Override
