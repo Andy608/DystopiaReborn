@@ -71,7 +71,7 @@ public class Dystopia {
 		} catch (Exception e) {
 			LoggerUtil.logError(getClass(), e);
 		} finally {
-			currentWorld.getSaveHandler().save(currentWorld);
+			currentWorld.save();
 			Window.save();
 			FileResourceTracker.releaseResource(ModelResourceManager.getInstance());
 			FileResourceTracker.releaseProgramResources();
@@ -133,12 +133,24 @@ public class Dystopia {
 		tick();
 	}
 	
+	private int totalFPS, averageFPS, counter;
+	
 	private void tick() {
 		ticks++;
 		if (ticks % 60 == 0) {
-			LoggerUtil.logInfo(getClass(), "Ticks: " + ticks + " | Frames: " + frames);
+			counter++;
+			totalFPS += frames;
+			averageFPS = totalFPS / counter;
+			LoggerUtil.logInfo(getClass(), "Ticks: " + ticks + " | FPS: " + frames + " | Average FPS: " + averageFPS);
 			ticks = 0;
 			frames = 0;
+			
+			if (counter % 100 == 0) {
+				LoggerUtil.logInfo(getClass(), "Reset Average FPS counter.");
+				averageFPS = 0;
+				totalFPS = 0;
+				counter = 0;
+			}
 		}
 	}
 	

@@ -55,7 +55,7 @@ public class ProgramSettings extends SettingsBase {
 		fullscreen = new BooleanSetting("fullscreen", false);
 		vSync = new BooleanSetting("vSync", true);
 		fieldOfView = new ClampedIntegerSetting("fov", 70, 30, 110);
-		renderDistance = new ClampedIntegerSetting("render_distance", 1, 1, 4);
+		renderDistance = new ClampedIntegerSetting("render_distance", 2, 0, 4);
 	}
 
 	@Override

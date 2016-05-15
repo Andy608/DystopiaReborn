@@ -43,10 +43,11 @@ public class WorldRenderer {
 		worldShader.loadCameraPosition(camera);
 		
 		//Draw active chunks
-		ArrayList<Chunk> activeChunks = currentWorld.getChunkManager().getActiveChunks();
-		
-		for (Chunk chunk : activeChunks) {
-			renderChunk(chunk, model);
+		synchronized(this) {
+			ArrayList<Chunk> activeChunks = currentWorld.getChunkManager().getActiveChunks();
+			for (int i = 0; i < activeChunks.size(); i++) {
+				renderChunk(activeChunks.get(i), model);
+			}
 		}
 		
 		GL20.glDisableVertexAttribArray(1);
@@ -55,7 +56,7 @@ public class WorldRenderer {
 	}
 	
 	//TODO: make the whole chunk a model to render at once instead of rendering each tile separately.
-	private void renderChunk(Chunk chunk, ModelRaw model/*This model parameter is temporary*/) {
+	private synchronized void renderChunk(Chunk chunk, ModelRaw model/*This model parameter is temporary*/) {
 //		transformationMatrix.setIdentity();
 //		translation.set(chunk.getChunkX(), 0, chunk.getChunkZ());
 //		MatrixMathHelper.translateMatrix(transformationMatrix, translation);

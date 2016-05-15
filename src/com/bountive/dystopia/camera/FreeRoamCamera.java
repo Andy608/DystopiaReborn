@@ -41,15 +41,15 @@ public class FreeRoamCamera extends Camera {
 	
 	private void moveCamera(float deltaTime) {
 		if (ControlSettings.moveForwardKey.isPressed()) {
-			acceleration.x += (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));
+			acceleration.x += (float)(MathHelper.sin(getYaw())/* * MathHelper.cos(getPitch())*/);
 //			acceleration.y -= (float)(MathHelper.sin(getPitch()));
-			acceleration.z -= (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));
+			acceleration.z -= (float)(MathHelper.cos(getYaw())/* * MathHelper.cos(getPitch())*/);
 		}
 		
 		if (ControlSettings.moveBackwardKey.isPressed()) {
-			acceleration.x -= (float)(MathHelper.sin(getYaw()) * MathHelper.cos(getPitch()));
+			acceleration.x -= (float)(MathHelper.sin(getYaw())/* * MathHelper.cos(getPitch())*/);
 //			acceleration.y += (float)(MathHelper.sin(getPitch()));
-			acceleration.z += (float)(MathHelper.cos(getYaw()) * MathHelper.cos(getPitch()));
+			acceleration.z += (float)(MathHelper.cos(getYaw())/* * MathHelper.cos(getPitch())*/);
 		}
 		
 		 if (ControlSettings.moveLeftKey.isPressed()) {

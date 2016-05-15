@@ -17,8 +17,8 @@ import com.bountive.dystopia.world.component.Chunk.EnumSafetyLevel;
 
 public class ChunkLoader {
 
-	protected ArrayList<Chunk> loadedChunks;
-	ArrayList<Chunk> removedChunks;
+	public ArrayList<Chunk> loadedChunks;
+	private ArrayList<Chunk> removedChunks;
 	
 	public ChunkLoader() {
 		loadedChunks = new ArrayList<>(64);

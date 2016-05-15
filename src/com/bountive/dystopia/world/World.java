@@ -7,8 +7,10 @@ import math.Vector3f;
 import com.bountive.dystopia.camera.Camera;
 import com.bountive.dystopia.camera.FreeRoamCamera;
 import com.bountive.dystopia.component.callback.CursorPosCallback;
+import com.bountive.dystopia.file.ResourceDirectory;
+import com.bountive.dystopia.file.ResourceHelper;
+import com.bountive.dystopia.world.component.ChunkSaver;
 import com.bountive.dystopia.world.component.WorldChunkManager;
-import com.bountive.dystopia.world.component.WorldSaveHandler;
 
 public class World {
 
@@ -18,6 +20,10 @@ public class World {
 	
 	public static final Random rand = new Random();
 	
+	public static final ResourceDirectory WORLD_DIRECTORY = new ResourceDirectory(ResourceHelper.GAME_APPDATA_DIRECTORY.getFullDirectory(), "worlds", false);
+	private ResourceDirectory worldDirectory;
+	private ChunkSaver chunkSaver;
+	
 	private String worldName;
 	
 	private long seed;
@@ -26,7 +32,6 @@ public class World {
 	private boolean centerMouse;
 	private boolean isPaused;
 	
-	private WorldSaveHandler saveHandler;
 	private WorldChunkManager chunkManager;
 	private WorldRenderer renderer;
 	
@@ -34,11 +39,15 @@ public class World {
 		//Create a new world save.
 		worldName = name;
 		seed = rand.nextLong();
-		camera = new FreeRoamCamera(new Vector3f(2, 0, 0), new Vector3f(20, 0, 0));
+		
+		worldDirectory = new ResourceDirectory(WORLD_DIRECTORY.getFullDirectory(), worldName, false);
+		chunkSaver = new ChunkSaver(worldDirectory);
+		
+		camera = new FreeRoamCamera(new Vector3f(0, 2, 0), new Vector3f(20, 0, 0));
 		centerMouse = true;
 		isPaused = false;
-		chunkManager = new WorldChunkManager();
-		saveHandler = new WorldSaveHandler(worldName);
+		chunkManager = new WorldChunkManager(chunkSaver);
+		chunkManager.start();
 		renderer = new WorldRenderer();
 	}
 	
@@ -49,11 +58,21 @@ public class World {
 			CursorPosCallback.centerMouse();
 		}
 		camera.update((float)deltaTime);
-		chunkManager.update(saveHandler.getChunkSaver(), (int)camera.getX(), (int)camera.getZ());
+		chunkManager.update((int)camera.getX(), (int)camera.getZ());
 	}
 	
 	public void render(double lerp) {
 		renderer.render(this);
+	}
+	
+	public void save() {
+		System.out.println("Saving World...");
+		chunkSaver.saveChunks(chunkManager.getChunkLoader().loadedChunks);
+		System.out.println("Save Complete!");
+	}
+	
+	public ChunkSaver getChunkSaver() {
+		return chunkSaver;
 	}
 	
 	public Camera getCamera() {
@@ -70,9 +89,5 @@ public class World {
 	
 	public WorldChunkManager getChunkManager() {
 		return chunkManager;
-	}
-	
-	public WorldSaveHandler getSaveHandler() {
-		return saveHandler;
 	}
 }
