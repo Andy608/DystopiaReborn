@@ -74,14 +74,17 @@ public class FreeRoamCamera extends Camera {
 		
 		float velocityLength = velocity.lengthSquared();
 		if (velocityLength != 0) {
-			friction.set(velocity).negate().scale(0.1f);
+			friction.set(velocity);
+			friction.normalise().negate().scale(0.005f);
 			Vector3f.add(velocity, friction, velocity);
 			if (velocity.lengthSquared() < MIN_VELOCITY) velocity.set(0, 0, 0);
 		}
 		
-		velocity.x = MathHelper.clampFloat(velocity.x, -MAX_SPEED, MAX_SPEED);
-		velocity.y = MathHelper.clampFloat(velocity.y, -MAX_SPEED, MAX_SPEED);
-		velocity.z = MathHelper.clampFloat(velocity.z, -MAX_SPEED, MAX_SPEED);
+		float maxSpeed = MAX_SPEED * deltaTime;
+		if (velocity.length() > maxSpeed) {
+			velocity.normalise().scale(maxSpeed);
+		}
+		
 		Vector3f.add(position, velocity, position);
 	}
 	

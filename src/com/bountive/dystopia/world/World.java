@@ -9,7 +9,6 @@ import com.bountive.dystopia.camera.FreeRoamCamera;
 import com.bountive.dystopia.component.callback.CursorPosCallback;
 import com.bountive.dystopia.file.ResourceDirectory;
 import com.bountive.dystopia.file.ResourceHelper;
-import com.bountive.dystopia.world.component.ChunkSaver;
 import com.bountive.dystopia.world.component.WorldChunkManager;
 
 public class World {
@@ -22,7 +21,6 @@ public class World {
 	
 	public static final ResourceDirectory WORLD_DIRECTORY = new ResourceDirectory(ResourceHelper.GAME_APPDATA_DIRECTORY.getFullDirectory(), "worlds", false);
 	private ResourceDirectory worldDirectory;
-	private ChunkSaver chunkSaver;
 	
 	private String worldName;
 	
@@ -41,12 +39,11 @@ public class World {
 		seed = rand.nextLong();
 		
 		worldDirectory = new ResourceDirectory(WORLD_DIRECTORY.getFullDirectory(), worldName, false);
-		chunkSaver = new ChunkSaver(worldDirectory);
 		
 		camera = new FreeRoamCamera(new Vector3f(0, 2, 0), new Vector3f(20, 0, 0));
 		centerMouse = true;
 		isPaused = false;
-		chunkManager = new WorldChunkManager(chunkSaver);
+		chunkManager = new WorldChunkManager(worldDirectory);
 		chunkManager.start();
 		renderer = new WorldRenderer();
 	}
@@ -67,12 +64,8 @@ public class World {
 	
 	public void save() {
 		System.out.println("Saving World...");
-		chunkSaver.saveChunks(chunkManager.getChunkLoader().loadedChunks);
+		chunkManager.getChunkSaver().saveChunks(chunkManager, chunkManager.getChunkLoader().loadedChunks);
 		System.out.println("Save Complete!");
-	}
-	
-	public ChunkSaver getChunkSaver() {
-		return chunkSaver;
 	}
 	
 	public Camera getCamera() {

@@ -3,6 +3,8 @@ package com.bountive.dystopia.world.component;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bountive.dystopia.file.ResourceDirectory;
+
 public class WorldChunkManager extends Thread {
 
 	/**
@@ -10,17 +12,25 @@ public class WorldChunkManager extends Thread {
 	 * from a file. If it does not find anything it creates a new chunk.
 	 */
 	private volatile ArrayList<Chunk> activeChunks;
+	
+	public final ResourceDirectory LEVEL;
+	public final int CHUNK_BYTE_LENGTH;
+	
 	private volatile ChunkLoader chunkLoader;
 	private volatile ChunkSaver chunkSaver;
 	private volatile int playerX, playerZ;
 	
 	private volatile boolean isRunning, isUpdate;
 	
-	public WorldChunkManager(ChunkSaver saver) {
+	public WorldChunkManager(ResourceDirectory worldDirectory) {
 		super("Chunk Manager");
 		activeChunks = new ArrayList<>(64);
+		
+		LEVEL = new ResourceDirectory(worldDirectory.getFullDirectory(), "level", false);
+		CHUNK_BYTE_LENGTH = (2 * Integer.BYTES) + 1 + Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE;
+		
 		chunkLoader = new ChunkLoader();
-		chunkSaver = saver;
+		chunkSaver = new ChunkSaver();
 		isRunning = true;
 		isUpdate = false;
 	}
@@ -55,32 +65,32 @@ public class WorldChunkManager extends Thread {
 			
 //			System.out.println(chunkX + " | " + chunkZ);
 			
-			loadChunks(chunkSaver, quadrant, chunkX, chunkZ);
+			loadChunks(quadrant, chunkX, chunkZ);
 			unloadChunks(chunkSaver, quadrant, chunkX, chunkZ);
 			isUpdate = false;
 		}
 	}
 	
-	public synchronized void update(int newPlayerX, int newPlayerZ) {
+	public void update(int newPlayerX, int newPlayerZ) {
 		isUpdate = true;
 		playerX = newPlayerX;
 		playerZ = newPlayerZ;
 	}
 	
-	public synchronized void loadChunks(ChunkSaver chunkSaver, EnumQuadrant quadrant, int chunkX, int chunkZ) {
+	public void loadChunks(EnumQuadrant quadrant, int chunkX, int chunkZ) {
 		//Step 1. Load needed chunks/create new ones
 		//Checks if the current chunk and surrounding chunks are in the save file.
 		//Loads all the chunks it finds into queue list and creates the chunks it can't find.
-		chunkLoader.loadRequiredChunks(chunkSaver, quadrant, chunkX, chunkZ);
+		chunkLoader.loadRequiredChunks(this, quadrant, chunkX, chunkZ);
 		
 		//Step 2. Add the loaded/created chunks into the world.
 		addChunksToWorld(chunkLoader.loadedChunks);
 	}
 	
-	private synchronized void unloadChunks(ChunkSaver chunkSaver, EnumQuadrant quadrant, int chunkX, int chunkZ) {
+	private void unloadChunks(ChunkSaver chunkSaver, EnumQuadrant quadrant, int chunkX, int chunkZ) {
 		//Step 3. Unload unneeded chunks from the loader.
 		//Removes unneeded chunks from the chunk loader queue based on player distance.
-		List<Chunk> oldChunks = chunkLoader.cleanQueue(chunkSaver, quadrant, chunkX, chunkZ);
+		List<Chunk> oldChunks = chunkLoader.cleanQueue(this, chunkSaver, quadrant, chunkX, chunkZ);
 		
 //		System.out.println(oldChunks.size() + " OLD CHUNKS");
 		
@@ -88,7 +98,7 @@ public class WorldChunkManager extends Thread {
 		removeChunksFromWorld(oldChunks);
 	}
 	
-	private synchronized void addChunksToWorld(List<Chunk> chunks) {
+	private void addChunksToWorld(List<Chunk> chunks) {
 		boolean addChunk = true;
 		for (Chunk loadedChunk : chunks) {
 			for (int i = 0; i < activeChunks.size(); i++) {
@@ -99,9 +109,9 @@ public class WorldChunkManager extends Thread {
 			}
 			
 			if (addChunk) {
-				System.out.println("Adding chunk to world: (" + loadedChunk.getChunkX() + ", " + loadedChunk.getChunkZ() + ")");
+//				System.out.println("Adding chunk to world: (" + loadedChunk.getChunkX() + ", " + loadedChunk.getChunkZ() + ")");
 				activeChunks.add(loadedChunk);
-				System.out.println("Active chunks in world: " + activeChunks.size());
+//				System.out.println("Active chunks in world: " + activeChunks.size());
 			}
 			addChunk = true;
 		}
@@ -109,7 +119,7 @@ public class WorldChunkManager extends Thread {
 //		System.out.println(activeChunks.size());
 	}
 	
-	private synchronized void removeChunksFromWorld(List<Chunk> chunks) {
+	private void removeChunksFromWorld(List<Chunk> chunks) {
 		for (Chunk c : chunks) {
 			activeChunks.remove(c);
 			//Update the world with the new active chunks list.
@@ -123,5 +133,9 @@ public class WorldChunkManager extends Thread {
 	
 	public ChunkLoader getChunkLoader() {
 		return chunkLoader;
+	}
+	
+	public ChunkSaver getChunkSaver() {
+		return chunkSaver;
 	}
 }
