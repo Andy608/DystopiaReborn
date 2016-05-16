@@ -53,7 +53,7 @@ public class ControlSettings extends SettingsBase {
 		moveRightKey = new SingleKeySetting("move_right_key", GLFW.GLFW_KEY_A);
 		moveUpKey = new SingleKeySetting("jump_key", GLFW.GLFW_KEY_SPACE);
 		moveDownKey = new SingleKeySetting("duck_key", GLFW.GLFW_KEY_LEFT_SHIFT);
-		mouseSensitivity = new PercentSetting("mouse_sensitivity_percentage", 2, 100f, 51f, 200f);
+		mouseSensitivity = new PercentSetting("mouse_sensitivity_percentage", 4, 100f, 26f, 200f);
 	}
 
 	@Override

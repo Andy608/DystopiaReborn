@@ -5,7 +5,7 @@ import math.Vector3f;
 
 public abstract class Camera {
 
-	protected static final float MAX_SPEED = 5;
+	protected static final float MAX_SPEED = 5f;
 	protected static final float MIN_VELOCITY = 0.00001f;
 	
 	protected Vector3f acceleration;
