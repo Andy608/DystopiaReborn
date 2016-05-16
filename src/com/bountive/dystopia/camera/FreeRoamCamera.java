@@ -26,7 +26,7 @@ public class FreeRoamCamera extends Camera {
 		acceleration.set(0, 0, 0);
 		friction.set(0, 0, 0);
 		moveCamera(deltaTime);
-		rotateCamera();
+		rotateCamera(deltaTime);
 		createViewMatrix();
 	}
 	
@@ -88,13 +88,13 @@ public class FreeRoamCamera extends Camera {
 		Vector3f.add(position, velocity, position);
 	}
 	
-	private void rotateCamera() {
-		rotationAcceleration.set(ControlSettings.mouseSensitivity.getValue() * (float)Math.toRadians(CursorPosCallback.getMouseOffsetX()), ControlSettings.mouseSensitivity.getValue() * (float)Math.toRadians(CursorPosCallback.getMouseOffsetY()), 0);
+	private void rotateCamera(double deltaTime) {
+		rotationAcceleration.set(ControlSettings.mouseSensitivity.getValue() * (float)Math.toRadians(ControlSettings.mouseSensitivity.getValue() * CursorPosCallback.getMouseOffsetX()), (float)Math.toRadians(CursorPosCallback.getMouseOffsetY()), 0);
 		Vector3f.add(rotationVelocity, (Vector3f)rotationAcceleration, rotationVelocity);
 		
 		float rotVelLength = rotationVelocity.lengthSquared();
 		if (rotVelLength != 0) {
-			friction.set(rotationVelocity).negate().scale(0.5f);
+			friction.set(rotationVelocity).negate().scale((1f / ControlSettings.mouseSensitivity.getValue()));
 			Vector3f.add(rotationVelocity, friction, rotationVelocity);
 			if (rotationVelocity.lengthSquared() < MIN_VELOCITY) rotationVelocity.set(0, 0, 0);
 		}

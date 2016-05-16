@@ -58,6 +58,6 @@ public class PercentSetting extends FileSetting {
 	 * Calculates what the value would be at the current percentage.
 	 */
 	public float getValue() {
-		return defaultValue * customPercent; 
+		return defaultValue * (customPercent / 100.0f);
 	}
 }
