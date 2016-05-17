@@ -9,7 +9,7 @@ import com.bountive.dystopia.camera.FreeRoamCamera;
 import com.bountive.dystopia.component.callback.CursorPosCallback;
 import com.bountive.dystopia.file.ResourceDirectory;
 import com.bountive.dystopia.file.ResourceHelper;
-import com.bountive.dystopia.world.component.WorldChunkManager;
+import com.bountive.dystopia.world.generation.WorldChunkManager;
 
 public class World {
 
@@ -64,6 +64,7 @@ public class World {
 	
 	public void save() {
 		System.out.println("Saving World...");
+		chunkManager.stopRunning();
 		chunkManager.getChunkSaver().saveChunks(chunkManager, chunkManager.getChunkLoader().loadedChunks);
 		System.out.println("Save Complete!");
 	}

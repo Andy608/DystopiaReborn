@@ -15,14 +15,11 @@ public class SpriteSheet implements IRelease {
 	private FileResourceLocation spriteSheetLocation;//use to create buffered image / byte buffer.
 	private String spriteSheetName;
 	private boolean isActive;
-	private int widthIndexes;//Amount of images tiling along x-axis
-	private int heightIndexes;//Amount of images tiling along y-axis
+	public static final int TILE_WIDTH = 16;
 	
-	public SpriteSheet(ResourceDirectory dir, String name, int tilesWidth, int tilesHeight) {
+	public SpriteSheet(ResourceDirectory dir, String name) {
 		spriteSheetLocation = new FileResourceLocation(dir, name, EnumFileExtension.PNG);
 		spriteSheetName = name;
-		widthIndexes = tilesWidth;
-		heightIndexes = tilesHeight;
 	}
 	
 	public String getName() {
@@ -36,14 +33,6 @@ public class SpriteSheet implements IRelease {
 	
 	public boolean isActive() {
 		return isActive;
-	}
-	
-	public int getWidthIndexAmount() {
-		return widthIndexes;
-	}
-	
-	public int getHeightIndexAmount() {
-		return heightIndexes;
 	}
 	
 	@Override

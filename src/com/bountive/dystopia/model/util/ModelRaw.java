@@ -6,18 +6,18 @@ import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
 public class ModelRaw {
-
+	
 	private int vaoID;
 	private int vertexCount;
 	
 	private int[] indices;
 	private VBOWrapper[] vboIDs;
 	
-	public ModelRaw(int arrayID, int[] ind, VBOWrapper[] bufferIDs) {
+	public ModelRaw(int arrayID, int[] ind, VBOWrapper[] vbos) {
 		vaoID = arrayID;
 		vertexCount = ind.length;
 		indices = ind;
-		vboIDs = bufferIDs;
+		vboIDs = vbos;
 	}
 	
 	public void rebuildVAO() {

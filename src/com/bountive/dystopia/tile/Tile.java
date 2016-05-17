@@ -1,13 +1,18 @@
 package com.bountive.dystopia.tile;
 
+import com.bountive.dystopia.model.BlueprintTile;
+import com.bountive.dystopia.model.ModelTile;
 import com.bountive.dystopia.texture.SpriteSheet;
 import com.bountive.dystopia.texture.SpriteSheetList;
 
 public class Tile {
 
+	public static final BlueprintTile TILE_BLUEPRINT = new BlueprintTile();
+	
 	private int tileID;
 	private String unlocalizedName;
 	private MovementAnimType movementType;
+	private ModelTile tileModel;
 	private SpriteSheet spriteSheet;
 	private int spriteSheetIndexX;
 	private int spriteSheetIndexY;
@@ -25,6 +30,10 @@ public class Tile {
 		spriteSheetIndexY = spriteIndexY;
 	}
 	
+	public void buildModel() {
+		tileModel = TILE_BLUEPRINT.createModel(this);
+	}
+	
 	public int getID() {
 		return tileID;
 	}
@@ -35,6 +44,10 @@ public class Tile {
 	
 	public MovementAnimType getMovementType() {
 		return movementType;
+	}
+	
+	public ModelTile getModel() {
+		return tileModel;
 	}
 	
 	public SpriteSheet getSpriteSheet() {

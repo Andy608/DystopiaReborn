@@ -1,16 +1,25 @@
 package com.bountive.dystopia.model;
 
-public class ModelTile extends ModelBluePrint {
+import com.bountive.dystopia.model.util.ModelRaw;
+import com.bountive.dystopia.model.util.VBOWrapper;
+import com.bountive.dystopia.tile.Tile;
 
-	public ModelTile() {
-		super(new float[] {
-				-0.5f, 0.0f, 0.5f,
-				-0.5f, 0.0f, -0.5f,
-				0.5f, 0.0f,  0.5f,
-				0.5f, 0.0f, -0.5f, 
-		},
-		new int[]{0, 1, 2, 2, 1, 3},
-		new float[] {},
-		new float[] {});
+public class ModelTile extends ModelRaw {
+
+	private Tile tile;
+	private VBOWrapper textureCoords;
+	
+	public ModelTile(Tile t, int arrayID, int[] ind, VBOWrapper positionsVBO, VBOWrapper colorsVBO, VBOWrapper normalsVBO, VBOWrapper textureCoordsVBO) {
+		super(arrayID, ind, new VBOWrapper[] {positionsVBO, colorsVBO, normalsVBO, textureCoordsVBO});
+		tile = t;
+		textureCoords = textureCoordsVBO;
+	}
+	
+	public VBOWrapper getTextureCoordsVBO() {
+		return textureCoords;
+	}
+	
+	public Tile getTile() {
+		return tile;
 	}
 }

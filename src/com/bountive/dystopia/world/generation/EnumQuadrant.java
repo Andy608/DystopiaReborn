@@ -1,4 +1,4 @@
-package com.bountive.dystopia.world.component;
+package com.bountive.dystopia.world.generation;
 
 public enum EnumQuadrant {
 	

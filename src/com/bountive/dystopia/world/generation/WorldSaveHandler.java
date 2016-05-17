@@ -1,3 +1,4 @@
+package com.bountive.dystopia.world.generation;
 //package com.bountive.dystopia.world.component;
 //
 //import com.bountive.dystopia.file.ResourceDirectory;

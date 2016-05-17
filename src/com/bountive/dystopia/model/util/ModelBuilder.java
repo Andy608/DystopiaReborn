@@ -5,7 +5,13 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import com.bountive.dystopia.model.ModelBluePrint;
+import com.bountive.dystopia.model.BlueprintChunk;
+import com.bountive.dystopia.model.BlueprintTile;
+import com.bountive.dystopia.model.ModelChunk;
+import com.bountive.dystopia.model.ModelTile;
+import com.bountive.dystopia.texture.SpriteSheet;
+import com.bountive.dystopia.tile.Tile;
+import com.bountive.dystopia.world.generation.Chunk;
 
 /**
  * ModelBuilder
@@ -17,19 +23,6 @@ import com.bountive.dystopia.model.ModelBluePrint;
  */
 public class ModelBuilder {
 
-//	private static ModelBuilder instance;
-	
-//	private ModelBuilder() {}
-	
-//	public static void init() {
-//		if (instance == null) {
-//			instance = new ModelBuilder();
-//		}
-//		else {
-//			LoggerUtil.logWarn(instance.getClass(), instance.getClass().getSimpleName() + " has already been initialized.");
-//		}
-//	}
-	
 	/**
 	 * Builds a 3D model. It is assumed that all positions are in 3D spaces!
 	 * @param positions : The model's default positions in the world.
@@ -90,7 +83,72 @@ public class ModelBuilder {
 		return model;
 	}
 	
-	public static ModelRaw buildModel(ModelBluePrint bluePrint) {
+	public static ModelTile buildTileModel(BlueprintTile tileBlueprint, Tile tile) {
+		float[] positions = tileBlueprint.getPositions();
+		float[] normals = tileBlueprint.getVertexNormals();
+		float[] texCoords = tileBlueprint.getTextureCoords();
+		
+		float offsetX = tile.getSpriteIndexX() / (float)(SpriteSheet.TILE_WIDTH);
+		float offsetY = tile.getSpriteIndexY() / (float)(SpriteSheet.TILE_WIDTH);
+		for (int i = 0; i < texCoords.length; i++) {
+			if (i % 2 == 0) {
+				texCoords[i] = texCoords[i] + offsetX;
+			}
+			else {
+				texCoords[i] = texCoords[i] + offsetY;
+			}
+		}
+		
+		int[] indices = tileBlueprint.getIndices();
+		
+		int vaoID = createVAO();
+		VBOWrapper positionsVBO;
+		VBOWrapper colorsVBO;
+		VBOWrapper normalsVBO;
+		VBOWrapper textureCoordsVBO;
+		bindVAO(vaoID);
+		bindIndicesBuffer(indices);
+		int positionVBO = bindAttribToVAO(0, positions, 3);
+		float[] colors = colorizeModel(indices.length);
+		int colorVBO = bindAttribToVAO(1, colorizeModel(indices.length), 4);
+		int normalVBO = bindAttribToVAO(2, normals, 3);
+		int textureCoordVBO = bindAttribToVAO(3, texCoords, 2);
+		positionsVBO = new VBOWrapper(positionVBO, positions, 3);
+		colorsVBO = new VBOWrapper(colorVBO, colors, 4);
+		normalsVBO = new VBOWrapper(normalVBO, normals, 3);
+		textureCoordsVBO = new VBOWrapper(textureCoordVBO, texCoords, 2);
+		unbindVAO();
+		ModelTile model = new ModelTile(tile, vaoID, indices, positionsVBO, colorsVBO, normalsVBO, textureCoordsVBO);
+		ModelResourceManager.addModel(model);
+		return model;
+	}
+	
+	public static ModelChunk buildChunkModel(BlueprintChunk chunkBlueprint, Chunk chunk) {
+		float[] positions = chunkBlueprint.getPositions();
+		float[] normals = chunkBlueprint.getVertexNormals();
+		float[] texCoords = chunkBlueprint.getTextureCoords();
+		int[] indices = chunkBlueprint.getIndices();
+		
+		int vaoID = createVAO();
+		VBOWrapper[] vboIDs = new VBOWrapper[4];
+		bindVAO(vaoID);
+		bindIndicesBuffer(indices);
+		int positionVBO = bindAttribToVAO(0, positions, 3);
+		float[] colors = colorizeModel(indices.length);
+		int colorVBO = bindAttribToVAO(1, colorizeModel(indices.length), 4);//TODO: Do we need colorizer anymore?
+		int normalVBO = bindAttribToVAO(2, normals, 3);
+		int textureCoordVBO = bindAttribToVAO(3, texCoords, 2);
+		vboIDs[0] = new VBOWrapper(positionVBO, positions, 3);
+		vboIDs[1] = new VBOWrapper(colorVBO, colors, 4);
+		vboIDs[2] = new VBOWrapper(normalVBO, normals, 3);
+		vboIDs[3] = new VBOWrapper(textureCoordVBO, texCoords, 2);
+		unbindVAO();
+		ModelChunk model = new ModelChunk(chunk, vaoID, indices, vboIDs);
+		ModelResourceManager.addModel(model);
+		return model;
+	}
+	
+	public static ModelRaw buildModel(BlueprintTile bluePrint) {
 		return buildModel(bluePrint.getPositions(), bluePrint.getIndices(), bluePrint.getVertexNormals(), bluePrint.getTextureCoords());
 	}
 	

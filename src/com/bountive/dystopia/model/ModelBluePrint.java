@@ -1,14 +1,16 @@
 package com.bountive.dystopia.model;
 
-public abstract class ModelBluePrint {
+public abstract class ModelBlueprint {
 
-	private float[] vertexPositions;
-	private int[] indices;
+	protected float[] vertexPositions;
+	protected int[] indices;
 	
-	private float[] vertexNormals;
-	private float[] textureCoordinates;
+	protected float[] vertexNormals;
+	protected float[] textureCoordinates;
 	
-	public ModelBluePrint(float[] positions, int[] inds, float[] normals, float[] textCoords) {
+	public ModelBlueprint() {}
+	
+	public ModelBlueprint(float[] positions, int[] inds, float[] normals, float[] textCoords) {
 		vertexPositions = positions;
 		indices = inds;
 		vertexNormals = normals;
@@ -16,18 +18,18 @@ public abstract class ModelBluePrint {
 	}
 	
 	public float[] getPositions() {
-		return vertexPositions.clone();
+		return vertexPositions;
 	}
 	
 	public int[] getIndices() {
-		return indices.clone();
+		return indices;
 	}
 	
 	public float[] getVertexNormals() {
-		return vertexNormals.clone();
+		return vertexNormals;
 	}
 	
 	public float[] getTextureCoords() {
-		return textureCoordinates.clone();
+		return textureCoordinates;
 	}
 }

@@ -1,8 +1,9 @@
-package com.bountive.dystopia.world.component;
+package com.bountive.dystopia.world.generation;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bountive.dystopia.debug.logger.LoggerUtil;
 import com.bountive.dystopia.file.ResourceDirectory;
 
 public class WorldChunkManager extends Thread {
@@ -21,7 +22,7 @@ public class WorldChunkManager extends Thread {
 	private volatile ChunkSaver chunkSaver;
 	private volatile int playerX, playerZ;
 	
-	private volatile boolean isRunning, isUpdate;
+	private volatile boolean finished = false, isUpdate = false;
 	
 	public WorldChunkManager(ResourceDirectory worldDirectory) {
 		super("Chunk Manager");
@@ -33,14 +34,11 @@ public class WorldChunkManager extends Thread {
 		
 		chunkLoader = new ChunkLoader();
 		chunkSaver = new ChunkSaver();
-		isRunning = true;
-		isUpdate = false;
 	}
 	
 	@Override
 	public void run() {
-		while (isRunning) {
-			
+		while (!finished) {
 			if (!isUpdate) continue;
 			
 			//Eventually we will update chunks on player action and only load new chunks when the player moves. (Maybe)
@@ -54,6 +52,11 @@ public class WorldChunkManager extends Thread {
 			unloadChunks(chunkSaver, quadrant, chunkX, chunkZ);
 			isUpdate = false;
 		}
+		LoggerUtil.logInfo(getClass(), "WorldChunkManager stopped.");
+	}
+	
+	public void stopRunning() {
+		finished = true;
 	}
 	
 	public void update(int newPlayerX, int newPlayerZ) {

@@ -1,4 +1,4 @@
-package com.bountive.dystopia.world.component;
+package com.bountive.dystopia.world.generation;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -12,7 +12,7 @@ import com.bountive.dystopia.debug.logger.LoggerUtil;
 import com.bountive.dystopia.file.FileResourceLocation;
 import com.bountive.dystopia.file.FileResourceLocation.EnumFileExtension;
 import com.bountive.dystopia.file.setting.ProgramSettings;
-import com.bountive.dystopia.world.component.Chunk.EnumSafetyLevel;
+import com.bountive.dystopia.world.generation.Chunk.EnumSafetyLevel;
 
 public class ChunkLoader {
 
@@ -106,7 +106,7 @@ public class ChunkLoader {
 		File location = new File(regionFile.getFullPath());
 		
 		if (location.exists()) {
-			Chunk newChunk = null;
+			Chunk fileChunk = null;
 			
 			try (DataInputStream is = new DataInputStream(new FileInputStream(location));) {
 				//Open file and traverse through it and compare chunkX and chunkZ values.
@@ -129,9 +129,9 @@ public class ChunkLoader {
 								fileTiles[x][z] = is.readByte();
 							}
 						}
-						newChunk = new Chunk(fileChunkX, fileChunkZ, fileLevel, fileTiles);
-						LoggerUtil.logInfo(getClass(), "Adding file chunk to chunkLoader: (" + newChunk.getChunkX() + ", " + newChunk.getChunkZ() + ")");
-						loadedChunks.add(newChunk);
+						fileChunk = new Chunk(fileChunkX, fileChunkZ, fileLevel, fileTiles);
+						LoggerUtil.logInfo(getClass(), "Adding file chunk to chunkLoader: (" + fileChunk.getChunkX() + ", " + fileChunk.getChunkZ() + ")");
+						loadedChunks.add(fileChunk);
 						
 //						LoggerUtil.logInfo(getClass(), "Successfully loaded chunk from file.");
 						return true;

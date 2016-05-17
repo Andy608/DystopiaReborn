@@ -1,4 +1,4 @@
-package com.bountive.dystopia.world.component;
+package com.bountive.dystopia.world.generation;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

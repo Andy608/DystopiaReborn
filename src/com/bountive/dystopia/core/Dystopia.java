@@ -14,7 +14,6 @@ import com.bountive.dystopia.component.Window;
 import com.bountive.dystopia.component.callback.CursorPosCallback;
 import com.bountive.dystopia.debug.logger.LoggerUtil;
 import com.bountive.dystopia.file.FileUtil;
-import com.bountive.dystopia.model.util.ModelList;
 import com.bountive.dystopia.model.util.ModelResourceManager;
 import com.bountive.dystopia.texture.SpriteSheetList;
 import com.bountive.dystopia.texture.SpriteSheetManager;
@@ -60,10 +59,8 @@ public class Dystopia {
 			Window.init(Info.NAME + " | " + Info.AUTHOR + " | "+ Info.VERSION);
 			Window.buildScreen();
 			CameraMatrixManager.init();
-//			ModelBuilder.init();//TODO: Might be able to make ModelBuilder class completely static. Must test this.
 			GL.createCapabilities();
 			ModelResourceManager.init();
-			ModelList.initModels();
 			SpriteSheetManager.init();
 			SpriteSheetList.initSpriteSheets();
 			TileList.initTiles();

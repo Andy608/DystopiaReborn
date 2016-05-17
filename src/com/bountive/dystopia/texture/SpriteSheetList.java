@@ -8,7 +8,7 @@ public class SpriteSheetList {
 	public static SpriteSheet tileTerrainSpriteSheet;
 	
 	public static void initSpriteSheets() {
-		tileTerrainSpriteSheet = new SpriteSheet(IMAGES_DIRECTORY, "terrain", 16, 16);
+		tileTerrainSpriteSheet = new SpriteSheet(IMAGES_DIRECTORY, "terrain");
 		
 		registerSpriteSheets();
 	}

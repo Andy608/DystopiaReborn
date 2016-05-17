@@ -1,10 +1,15 @@
-package com.bountive.dystopia.world.component;
+package com.bountive.dystopia.world.generation;
+
+import com.bountive.dystopia.model.BlueprintChunk;
+import com.bountive.dystopia.model.ModelChunk;
 
 
 public class Chunk {
 
 	public static final int CHUNK_SIZE = 16;
 	
+	private BlueprintChunk chunkBlueprint;
+	private ModelChunk chunkModel;
 	private int chunkX, chunkZ;
 	private byte tileIDs[][];
 	private EnumSafetyLevel safetyLevel;
@@ -12,28 +17,34 @@ public class Chunk {
 	
 	private boolean hasUpdated;
 	
-	public Chunk(int x, int z) {
-		tileIDs = new byte[CHUNK_SIZE][CHUNK_SIZE];
+	private Chunk(int x, int z, EnumSafetyLevel level) {
 		chunkX = x;
 		chunkZ = z;
+		safetyLevel = level;
+		quadrant = EnumQuadrant.getQuadrant(x, z);
+		hasUpdated = false;
+		chunkBlueprint = new BlueprintChunk();
+	}
+	
+	public Chunk(int x, int z) {
+		this(x, z, EnumSafetyLevel.LEVEL_1);
 		
 		//Temporary
+		tileIDs = new byte[CHUNK_SIZE][CHUNK_SIZE];
 		for (int b = 0; b < tileIDs.length; b++) {
 			for (int h = 0; h < tileIDs[b].length; h++) {
 				tileIDs[b][h] = 0;
 			}
 		}
-		safetyLevel = EnumSafetyLevel.LEVEL_1;//TODO: CHANGE THIS
-		quadrant = EnumQuadrant.getQuadrant(x, z);
-		hasUpdated = false;
 	}
 	
 	public Chunk(int x, int z, EnumSafetyLevel level, byte[][] tiles) {
-		chunkX = x;
-		chunkZ = z;
-		quadrant = EnumQuadrant.getQuadrant(x, z);
-		safetyLevel = level;
+		this(x, z, level);
 		tileIDs = tiles;
+	}
+	
+	public void buildModel() {
+		chunkModel = chunkBlueprint.createModel(this);
 	}
 	
 	public int getDistanceX(int otherChunkX) {
@@ -61,8 +72,9 @@ public class Chunk {
 		return zDistance;
 	}
 	
-	public void setUpdated() {
+	public void update() {
 		hasUpdated = true;
+		buildModel();
 	}
 	
 	public byte getTileID(int b, int h) {
@@ -91,6 +103,10 @@ public class Chunk {
 	
 	public boolean hasUpdated() {
 		return hasUpdated;
+	}
+	
+	public ModelChunk getModel() {
+		return chunkModel;
 	}
 	
 	@Override
