@@ -2,8 +2,8 @@ package com.bountive.dystopia.tile;
 
 import com.bountive.dystopia.model.BlueprintTile;
 import com.bountive.dystopia.model.ModelTile;
-import com.bountive.dystopia.texture.SpriteSheet;
-import com.bountive.dystopia.texture.SpriteSheetList;
+import com.bountive.dystopia.texture.Texture;
+import com.bountive.dystopia.texture.TilesetList;
 
 public class Tile {
 
@@ -13,15 +13,15 @@ public class Tile {
 	private String unlocalizedName;
 	private MovementAnimType movementType;
 	private ModelTile tileModel;
-	private SpriteSheet spriteSheet;
+	private Texture spriteSheet;
 	private int spriteSheetIndexX;
 	private int spriteSheetIndexY;
 	
 	public Tile(int id, String name, int spriteIndexX, int spriteIndexY) {
-		this(id, name, MovementAnimType.WALK, SpriteSheetList.tileTerrainSpriteSheet, spriteIndexX, spriteIndexY);
+		this(id, name, MovementAnimType.WALK, TilesetList.tilesetSpriteSheet, spriteIndexX, spriteIndexY);
 	}
 	
-	public Tile(int id, String name, MovementAnimType moveType, SpriteSheet sheet, int spriteIndexX, int spriteIndexY) {
+	public Tile(int id, String name, MovementAnimType moveType, Texture sheet, int spriteIndexX, int spriteIndexY) {
 		tileID = id;
 		unlocalizedName = name;
 		movementType = moveType;
@@ -50,7 +50,7 @@ public class Tile {
 		return tileModel;
 	}
 	
-	public SpriteSheet getSpriteSheet() {
+	public Texture getSpriteSheet() {
 		return spriteSheet;
 	}
 	

@@ -6,6 +6,7 @@ import math.Matrix4f;
 import math.Vector3f;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
@@ -14,6 +15,7 @@ import com.bountive.dystopia.camera.CameraMatrixManager;
 import com.bountive.dystopia.math.MatrixMathHelper;
 import com.bountive.dystopia.model.ModelChunk;
 import com.bountive.dystopia.shader.WorldShader;
+import com.bountive.dystopia.texture.TilesetList;
 import com.bountive.dystopia.world.generation.Chunk;
 
 public class WorldRenderer {
@@ -41,10 +43,10 @@ public class WorldRenderer {
 		//In a for loop renderer each chunk model.
 		
 		//Draw active chunks
+		worldShader.loadCameraPosition(camera);
+		
 		synchronized(this) {
 			ArrayList<Chunk> activeChunks = currentWorld.getChunkManager().getActiveChunks();
-			
-			worldShader.loadCameraPosition(camera);
 			
 			for (int i = 0; i < activeChunks.size(); i++) {
 				Chunk chunk = activeChunks.get(i);
@@ -52,12 +54,17 @@ public class WorldRenderer {
 				if (chunk.getModel() == null) {
 					chunk.buildModel();
 				}
-				
 				ModelChunk chunkModel = chunk.getModel();
 				
 				GL30.glBindVertexArray(chunkModel.getVaoID());
 				GL20.glEnableVertexAttribArray(0);
 				GL20.glEnableVertexAttribArray(1);
+				GL20.glEnableVertexAttribArray(3);
+				
+				GL13.glActiveTexture(GL13.GL_TEXTURE0);
+				
+				//TODO: Move this inside for loop when there are multiple tilesheets images.
+				GL11.glBindTexture(GL11.GL_TEXTURE_2D, TilesetList.tilesetSpriteSheet.getID());
 				
 				transformationMatrix.setIdentity();
 				translation.set(chunk.getChunkX() * Chunk.CHUNK_SIZE, 0, chunk.getChunkZ() * Chunk.CHUNK_SIZE);
@@ -67,27 +74,9 @@ public class WorldRenderer {
 			}
 		}
 		
+		GL20.glDisableVertexAttribArray(3);
 		GL20.glDisableVertexAttribArray(1);
 		GL20.glDisableVertexAttribArray(0);
 		worldShader.unbind();
 	}
-	
-	//TODO: make the whole chunk a model to render at once instead of rendering each tile separately.
-//	private synchronized void renderChunk(Chunk chunk, ModelRaw model/*This model parameter is temporary*/) {
-//		transformationMatrix.setIdentity();
-//		translation.set(chunk.getChunkX(), 0, chunk.getChunkZ());
-//		MatrixMathHelper.translateMatrix(transformationMatrix, translation);
-//		worldShader.loadTransformationMatrix(transformationMatrix);
-//		GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-	
-//		for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-//			for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-//				transformationMatrix.setIdentity();
-//				translation.set((chunk.getChunkX() * Chunk.CHUNK_SIZE) + x, 0, (chunk.getChunkZ() * Chunk.CHUNK_SIZE) + z);
-//				MatrixMathHelper.translateMatrix(transformationMatrix, translation);
-//				worldShader.loadTransformationMatrix(transformationMatrix);
-//				GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-//			}
-//		}
-//	}
 }

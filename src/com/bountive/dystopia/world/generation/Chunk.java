@@ -2,6 +2,7 @@ package com.bountive.dystopia.world.generation;
 
 import com.bountive.dystopia.model.BlueprintChunk;
 import com.bountive.dystopia.model.ModelChunk;
+import com.bountive.dystopia.world.World;
 
 
 public class Chunk {
@@ -31,9 +32,9 @@ public class Chunk {
 		
 		//Temporary
 		tileIDs = new byte[CHUNK_SIZE][CHUNK_SIZE];
-		for (int b = 0; b < tileIDs.length; b++) {
-			for (int h = 0; h < tileIDs[b].length; h++) {
-				tileIDs[b][h] = 0;
+		for (int b = 0; b < CHUNK_SIZE; b++) {
+			for (int h = 0; h < CHUNK_SIZE; h++) {
+				tileIDs[b][h] = (byte)(World.rand.nextInt(2));
 			}
 		}
 	}
@@ -45,6 +46,10 @@ public class Chunk {
 	
 	public void buildModel() {
 		chunkModel = chunkBlueprint.createModel(this);
+	}
+	
+	public void buildBlueprint() {
+		chunkBlueprint.createBlueprint(this);
 	}
 	
 	public int getDistanceX(int otherChunkX) {
@@ -77,8 +82,8 @@ public class Chunk {
 		buildModel();
 	}
 	
-	public byte getTileID(int b, int h) {
-		return tileIDs[b][h];
+	public byte getTileID(int b, int w) {
+		return tileIDs[b][w];
 	}
 	
 	public EnumSafetyLevel getSafetyLevel() {

@@ -9,7 +9,7 @@ import com.bountive.dystopia.model.BlueprintChunk;
 import com.bountive.dystopia.model.BlueprintTile;
 import com.bountive.dystopia.model.ModelChunk;
 import com.bountive.dystopia.model.ModelTile;
-import com.bountive.dystopia.texture.SpriteSheet;
+import com.bountive.dystopia.texture.TilesetList;
 import com.bountive.dystopia.tile.Tile;
 import com.bountive.dystopia.world.generation.Chunk;
 
@@ -88,8 +88,15 @@ public class ModelBuilder {
 		float[] normals = tileBlueprint.getVertexNormals();
 		float[] texCoords = tileBlueprint.getTextureCoords();
 		
-		float offsetX = tile.getSpriteIndexX() / (float)(SpriteSheet.TILE_WIDTH);
-		float offsetY = tile.getSpriteIndexY() / (float)(SpriteSheet.TILE_WIDTH);
+		float xIndex = (float)tile.getSpriteIndexX();
+		float yIndex = (float)tile.getSpriteIndexY();
+		
+		float borderOffset = 1.0f / (float)(TilesetList.TILESET_PIXEL_WIDTH);
+//		float offsetX = xIndex / (float)(TilesetList.TILESET_INDEX_WIDTH);
+//		float offsetY = yIndex / (float)(TilesetList.TILESET_INDEX_WIDTH);
+		float offsetX = (borderOffset * (xIndex * 2 + 1)) + (xIndex * ((1.0f / ((float)TilesetList.TILESET_PIXEL_WIDTH)) * TilesetList.TILE_PIXEL_WIDTH));
+		float offsetY = (borderOffset * (yIndex * 2 + 1)) + (yIndex * ((1.0f / ((float)TilesetList.TILESET_PIXEL_WIDTH)) * TilesetList.TILE_PIXEL_WIDTH));
+		
 		for (int i = 0; i < texCoords.length; i++) {
 			if (i % 2 == 0) {
 				texCoords[i] = texCoords[i] + offsetX;

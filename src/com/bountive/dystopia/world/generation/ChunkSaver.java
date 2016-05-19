@@ -24,7 +24,7 @@ public class ChunkSaver {
 	private synchronized void saveChunk(WorldChunkManager manager, Chunk c) {
 		
 		if (!c.hasUpdated()) {
-			LoggerUtil.logInfo(getClass(), "Chunk hasn't updated. No need to save.");
+//			LoggerUtil.logInfo(getClass(), "Chunk hasn't updated. No need to save.");
 			return;
 		}
 		
@@ -47,9 +47,11 @@ public class ChunkSaver {
 				os.writeByte(c.getSafetyLevel().ordinal());
 				
 				for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-					for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-						os.writeByte(c.getTileID(x, z));
-					}
+//					for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
+						for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
+							os.writeByte(c.getTileID(x, z));
+						}
+//					}
 				}
 				LoggerUtil.logInfo(getClass(), "Chunk successfully saved.");
 			} catch (FileNotFoundException e) {
@@ -136,9 +138,11 @@ public class ChunkSaver {
 			os.writeByte(addedChunk.getSafetyLevel().ordinal());
 			
 			for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
-				for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-					os.writeByte(addedChunk.getTileID(x, z));
-				}
+//				for (int y = 0; y < Chunk.CHUNK_SIZE; y++) {
+					for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
+						os.writeByte(addedChunk.getTileID(x, z));
+					}
+//				}
 			}
 			
 			//Offset the byteOffset by a chunk-byte-length because we just added another chunk

@@ -31,7 +31,7 @@ public class World {
 	private boolean isPaused;
 	
 	private WorldChunkManager chunkManager;
-	private WorldRenderer renderer;
+	private WorldRenderer worldRenderer;
 	
 	public World(String name) {
 		//Create a new world save.
@@ -39,13 +39,13 @@ public class World {
 		seed = rand.nextLong();
 		
 		worldDirectory = new ResourceDirectory(WORLD_DIRECTORY.getFullDirectory(), worldName, false);
-		
-		camera = new FreeRoamCamera(new Vector3f(0, 2, 0), new Vector3f(20, 0, 0));
+//		camera = new BirdsEyeCamera(new Vector3f(0, 1, 0), new Vector3f(70, 0, 0));
+		camera = new FreeRoamCamera(new Vector3f(0, 1, 0), new Vector3f(70, 0, 0));
 		centerMouse = true;
 		isPaused = false;
 		chunkManager = new WorldChunkManager(worldDirectory);
 		chunkManager.start();
-		renderer = new WorldRenderer();
+		worldRenderer = new WorldRenderer();
 	}
 	
 	public void update(double deltaTime) {
@@ -55,11 +55,12 @@ public class World {
 			CursorPosCallback.centerMouse();
 		}
 		camera.update((float)deltaTime);
+//		ModelResourceManager.update();
 		chunkManager.update((int)camera.getX(), (int)camera.getZ());
 	}
 	
 	public void render(double lerp) {
-		renderer.render(this);
+		worldRenderer.render(this);
 	}
 	
 	public void save() {

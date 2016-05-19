@@ -5,7 +5,9 @@ import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-public class ModelRaw {
+import com.bountive.dystopia.core.IRelease;
+
+public class ModelRaw implements IRelease {
 	
 	private int vaoID;
 	private int vertexCount;
@@ -35,6 +37,14 @@ public class ModelRaw {
 		GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, BufferHelper.toReadableIntBuffer(indices), GL15.GL_STATIC_DRAW);
 	}
 	
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof ModelRaw)) return false;
+		ModelRaw otherModel = (ModelRaw)other;
+		if (vaoID == otherModel.vaoID) return true;
+		return false;
+	}
+	
 	public int getVaoID() {
 		return vaoID;
 	}
@@ -45,5 +55,15 @@ public class ModelRaw {
 	
 	public int getVertexCount() {
 		return vertexCount;
+	}
+
+	@Override
+	public void release() {
+		indices = null;
+		for (VBOWrapper wrapper : vboIDs) {
+			wrapper.release();
+			wrapper = null;
+		}
+		vboIDs = null;
 	}
 }

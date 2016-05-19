@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 
-import org.lwjgl.opengl.GL11;
-
 import math.Vector2f;
 
 import com.bountive.dystopia.camera.CameraMatrixManager;
@@ -345,7 +343,7 @@ public class ProgramSettings extends SettingsBase {
 		ModelResourceManager.rebuildVAOs();
 //		ControlOptions.setPaused(ControlOptions.isPaused());
 		CameraMatrixManager.buildProjectionMatrix();
-		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);//TODO:MOVE THIS
+//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);//TODO:MOVE THIS
 	}
 	
 	/**

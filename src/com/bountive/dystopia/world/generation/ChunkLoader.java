@@ -75,6 +75,7 @@ public class ChunkLoader {
 							//Create a new random chunk from the world seed.
 							LoggerUtil.logInfo(getClass(), "Adding new chunk to chunkLoader: (" + newChunkX + ", " + newChunkZ + ")");
 							Chunk newChunk = new Chunk(newChunkX, newChunkZ);
+							newChunk.buildBlueprint();
 							loadedChunks.add(newChunk);
 						}
 					}
@@ -130,6 +131,7 @@ public class ChunkLoader {
 							}
 						}
 						fileChunk = new Chunk(fileChunkX, fileChunkZ, fileLevel, fileTiles);
+						fileChunk.buildBlueprint();
 						LoggerUtil.logInfo(getClass(), "Adding file chunk to chunkLoader: (" + fileChunk.getChunkX() + ", " + fileChunk.getChunkZ() + ")");
 						loadedChunks.add(fileChunk);
 						

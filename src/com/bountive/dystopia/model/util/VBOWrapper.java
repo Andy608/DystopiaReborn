@@ -2,7 +2,9 @@ package com.bountive.dystopia.model.util;
 
 import org.lwjgl.opengl.GL30;
 
-public class VBOWrapper {
+import com.bountive.dystopia.core.IRelease;
+
+public class VBOWrapper implements IRelease {
 
 	private int vboID;
 	private float[] vboData;
@@ -29,5 +31,10 @@ public class VBOWrapper {
 	
 	public float[] getData() {
 		return vboData;
+	}
+	
+	@Override
+	public void release() {
+		vboData = null;
 	}
 }

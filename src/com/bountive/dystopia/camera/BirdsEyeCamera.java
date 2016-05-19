@@ -3,7 +3,6 @@ package com.bountive.dystopia.camera;
 import math.Vector3f;
 
 import com.bountive.dystopia.file.setting.ControlSettings;
-import com.bountive.dystopia.math.MathHelper;
 import com.bountive.dystopia.math.MatrixMathHelper;
 
 public class BirdsEyeCamera extends Camera {
@@ -47,34 +46,40 @@ public class BirdsEyeCamera extends Camera {
 			acceleration.z++;
 		}
 		
-		 if (ControlSettings.moveLeftKey.isPressed()) {
-			 acceleration.x++;
-		 }
+		if (ControlSettings.moveLeftKey.isPressed()) {
+		acceleration.x++;
+		}
 		
-		 if (ControlSettings.moveRightKey.isPressed()) {
-			 acceleration.x--;
-		 }
+		if (ControlSettings.moveRightKey.isPressed()) {
+		acceleration.x--;
+		}
 		 
-		 if (ControlSettings.moveUpKey.isPressed()) {
-			 acceleration.y++;
-		 }
+		if (ControlSettings.moveUpKey.isPressed()) {
+			acceleration.y++;
+		}
 		 
-		 if (ControlSettings.moveDownKey.isPressed()) {
-			 acceleration.y--;
-		 }
+		if (ControlSettings.moveDownKey.isPressed()) {
+			acceleration.y--;
+		}
 		
+		float maxSpeed = MAX_SPEED * deltaTime;
+		if (velocity.lengthSquared() >= maxSpeed * maxSpeed) {
+			acceleration.set(0, 0, 0);
+		}
 		Vector3f.add(velocity, (Vector3f)(acceleration.scale((float)deltaTime)), velocity);
 		
 		float velocityLength = velocity.lengthSquared();
 		if (velocityLength != 0) {
-			friction.set(velocity).negate().scale(0.1f);
+//			friction.set(velocity).negate().scale(0.1f);
+//			Vector3f.add(velocity, friction, velocity);
+//			if (velocity.lengthSquared() < MIN_VELOCITY) velocity.set(0, 0, 0);
+			friction.set(velocity);
+			friction.normalise().negate().scale(0.005f);
 			Vector3f.add(velocity, friction, velocity);
-			if (velocity.lengthSquared() < MIN_VELOCITY) velocity.set(0, 0, 0);
+			if (velocity.lengthSquared() < MIN_VELOCITY) {
+				velocity.set(0, 0, 0);
+			}
 		}
-		
-		velocity.x = MathHelper.clampFloat(velocity.x, -MAX_SPEED, MAX_SPEED);
-		velocity.y = MathHelper.clampFloat(velocity.y, -MAX_SPEED, MAX_SPEED);
-		velocity.z = MathHelper.clampFloat(velocity.z, -MAX_SPEED, MAX_SPEED);
 		Vector3f.add(position, velocity, position);
 	}
 	

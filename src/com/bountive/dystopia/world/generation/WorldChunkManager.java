@@ -38,25 +38,30 @@ public class WorldChunkManager extends Thread {
 	
 	@Override
 	public void run() {
+		
 		while (!finished) {
-			if (!isUpdate) continue;
-			
-			//Eventually we will update chunks on player action and only load new chunks when the player moves. (Maybe)
-			EnumQuadrant quadrant = EnumQuadrant.getQuadrant(playerX, playerZ);
-			int chunkX = EnumQuadrant.convertXBasedOnQuadrant(quadrant, playerX, Chunk.CHUNK_SIZE);
-			int chunkZ = EnumQuadrant.convertZBasedOnQuadrant(quadrant, playerZ, Chunk.CHUNK_SIZE);
-			
-//			System.out.println(chunkX + " | " + chunkZ);
-			
-			loadChunks(quadrant, chunkX, chunkZ);
-			unloadChunks(chunkSaver, quadrant, chunkX, chunkZ);
-			isUpdate = false;
+			if (isUpdate) {
+				//Eventually we will update chunks on player action and only load new chunks when the player moves. (Maybe)
+				EnumQuadrant quadrant = EnumQuadrant.getQuadrant(playerX, playerZ);
+				int chunkX = EnumQuadrant.convertXBasedOnQuadrant(quadrant, playerX, Chunk.CHUNK_SIZE);
+				int chunkZ = EnumQuadrant.convertZBasedOnQuadrant(quadrant, playerZ, Chunk.CHUNK_SIZE);
+				
+//				System.out.println(chunkX + " | " + chunkZ);
+				
+				loadChunks(quadrant, chunkX, chunkZ);
+				unloadChunks(chunkSaver, quadrant, chunkX, chunkZ);
+				isUpdate = false;
+			}
 		}
 		LoggerUtil.logInfo(getClass(), "WorldChunkManager stopped.");
 	}
 	
 	public void stopRunning() {
 		finished = true;
+	}
+	
+	public boolean isUpdate() {
+		return isUpdate;
 	}
 	
 	public void update(int newPlayerX, int newPlayerZ) {
@@ -103,14 +108,13 @@ public class WorldChunkManager extends Thread {
 			}
 			addChunk = true;
 		}
-		
 //		System.out.println(activeChunks.size());
 	}
 	
-	private void removeChunksFromWorld(List<Chunk> chunks) {
-		for (Chunk c : chunks) {
-			activeChunks.remove(c);
-			//Update the world with the new active chunks list.
+	private synchronized void removeChunksFromWorld(List<Chunk> chunks) {
+		for (Chunk chunk : chunks) {
+			activeChunks.remove(chunk);
+//			ModelResourceManager.addModelToRemoveQueue(chunk.getModel());//TODO:Fuck this
 		}
 //		System.out.println(activeChunks.size());
 	}

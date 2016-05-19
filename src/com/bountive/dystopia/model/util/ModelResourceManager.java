@@ -12,8 +12,9 @@ import com.bountive.dystopia.debug.logger.LoggerUtil;
 public class ModelResourceManager implements IRelease {
 
 	private static ModelResourceManager instance;
-	public List<ModelRaw> activeModels;
+	private List<ModelRaw> activeModels;
 	
+	//TODO: Make a resource manager for the world. That will keep track of all the entities and models for that world and once the world is exited all the memory will be released from that world.
 	private ModelResourceManager() {
 		activeModels = new ArrayList<>();
 	}
@@ -29,8 +30,13 @@ public class ModelResourceManager implements IRelease {
 	}
 	
 	public static void addModel(ModelRaw model) {
-		System.out.println("ADDING MODEL");
-		instance.activeModels.add(model);
+		if (model != null) {
+			instance.activeModels.add(model);
+//			System.out.println("ADDED MODEL");
+		}
+		else {
+			System.out.println("NULL MODEL!! " + model);
+		}
 	}
 	
 	public static void rebuildVAOs() {
@@ -51,12 +57,11 @@ public class ModelResourceManager implements IRelease {
 	public void release() {
 		LoggerUtil.logInfo(getClass(), "Releasing VAOs and VBOs.");
 
-		for (ModelRaw model : instance.activeModels) {
-			GL30.glDeleteVertexArrays(model.getVaoID());
-		}
-		
-		for (ModelRaw model : instance.activeModels) {
-			for (VBOWrapper vboID : model.getVBOs()) {
+		for (int i = 0; i < instance.activeModels.size(); i++) {
+			ModelRaw m = instance.activeModels.get(i);
+			GL30.glDeleteVertexArrays(m.getVaoID());
+			
+			for (VBOWrapper vboID : m.getVBOs()) {
 				GL30.glDeleteVertexArrays(vboID.getID());
 			}
 		}

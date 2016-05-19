@@ -18,18 +18,18 @@ public abstract class ModelBlueprint {
 	}
 	
 	public float[] getPositions() {
-		return vertexPositions;
+		return vertexPositions.clone();
 	}
 	
 	public int[] getIndices() {
-		return indices;
+		return indices.clone();
 	}
 	
 	public float[] getVertexNormals() {
-		return vertexNormals;
+		return vertexNormals.clone();
 	}
 	
 	public float[] getTextureCoords() {
-		return textureCoordinates;
+		return textureCoordinates.clone();
 	}
 }

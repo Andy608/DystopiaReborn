@@ -15,8 +15,8 @@ import com.bountive.dystopia.component.callback.CursorPosCallback;
 import com.bountive.dystopia.debug.logger.LoggerUtil;
 import com.bountive.dystopia.file.FileUtil;
 import com.bountive.dystopia.model.util.ModelResourceManager;
-import com.bountive.dystopia.texture.SpriteSheetList;
-import com.bountive.dystopia.texture.SpriteSheetManager;
+import com.bountive.dystopia.texture.TextureLoader;
+import com.bountive.dystopia.texture.TilesetList;
 import com.bountive.dystopia.tile.TileList;
 import com.bountive.dystopia.world.World;
 
@@ -61,12 +61,12 @@ public class Dystopia {
 			CameraMatrixManager.init();
 			GL.createCapabilities();
 			ModelResourceManager.init();
-			SpriteSheetManager.init();
-			SpriteSheetList.initSpriteSheets();
+			TextureLoader.init();
+			TilesetList.init();
 			TileList.initTiles();
 			loop();
 		} catch (Exception e) {
-			LoggerUtil.logError(getClass(), e);
+			LoggerUtil.logError(getClass(), "There was an exception on exit.", e);
 		} finally {
 			currentWorld.save();
 			Window.save();
@@ -82,7 +82,7 @@ public class Dystopia {
 //	private WorldShader shader;
 //	private Matrix4f transformationMatrix;
 //	private TestRenderer testRenderer;
-	private World currentWorld;
+	private static World currentWorld;
 	/////////////////////////////
 	
 	private void loop() {
@@ -94,7 +94,7 @@ public class Dystopia {
 		currentWorld = new World("Test World");
 //		transformationMatrix = new Matrix4f();
 		CursorPosCallback.centerMouse();
-		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
+//		GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL11.GL_LINE);
 		/////////////////////////////
 		
 		double lastTime;
@@ -152,14 +152,19 @@ public class Dystopia {
 	}
 	
 	private void render(double lerp) {
-		frames++;
-//		GL11.glClearColor(0.5875f, 0.735f, 1.0f, 1.0f);
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		GL11.glEnable(GL11.GL_DEPTH_TEST);
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
+		
+		frames++;
+//		GL11.glClearColor(0.5875f, 0.735f, 1.0f, 1.0f);
 //		testRenderer.render(currentWorld);
 		currentWorld.render(lerp);
 		GLFW.glfwSwapBuffers(Window.getID());
+	}
+	
+	public static World getCurrentWorld() {
+		return currentWorld;
 	}
 	
 	public static Dystopia getMystica() {

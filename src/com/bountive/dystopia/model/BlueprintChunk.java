@@ -7,18 +7,17 @@ import com.bountive.dystopia.world.generation.Chunk;
 
 public class BlueprintChunk extends ModelBlueprint {
 
-	public ModelChunk createModel(Chunk chunk) {
+	public void createBlueprint(Chunk chunk) {
 		vertexPositions = new float[Tile.TILE_BLUEPRINT.vertexPositions.length * Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
 		vertexNormals = new float[Tile.TILE_BLUEPRINT.vertexNormals.length * Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
 		textureCoordinates = new float[Tile.TILE_BLUEPRINT.textureCoordinates.length * Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
 		indices = new int[Tile.TILE_BLUEPRINT.indices.length * Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
 		
 		int offset = 0;
-		
 		for (int z = 0; z < Chunk.CHUNK_SIZE; z++) {
 			for (int x = 0; x < Chunk.CHUNK_SIZE; x++) {
-				ModelTile tile = TileList.getTileRegistry().getTileByID(chunk.getTileID(x, z)).getModel();
 				
+				ModelTile tile = TileList.getTileRegistry().getTileByID(chunk.getTileID(x, z)).getModel();
 				for (int i = 0; i < Tile.TILE_BLUEPRINT.vertexPositions.length; i++) {
 					float position;
 					float normal;
@@ -51,6 +50,9 @@ public class BlueprintChunk extends ModelBlueprint {
 				offset++;
 			}
 		}
+	}
+	
+	public ModelChunk createModel(Chunk chunk) {
 		return ModelBuilder.buildChunkModel(this, chunk);
 	}
 }

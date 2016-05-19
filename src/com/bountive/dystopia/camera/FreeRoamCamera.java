@@ -74,7 +74,6 @@ public class FreeRoamCamera extends Camera {
 		if (velocity.lengthSquared() >= maxSpeed * maxSpeed) {
 			acceleration.set(0, 0, 0);
 		}
-		 
 		Vector3f.add(velocity, (Vector3f)(acceleration.scale((float)deltaTime)), velocity);
 		
 		float velocityLength = velocity.lengthSquared();
@@ -96,13 +95,14 @@ public class FreeRoamCamera extends Camera {
 		
 		float rotVelLength = rotationVelocity.lengthSquared();
 		if (rotVelLength != 0) {
-			friction.set(rotationVelocity).negate().scale((1f / ControlSettings.mouseSensitivity.getValue()));
+			if (rotationAcceleration.lengthSquared() == 0) {
+				friction.set(rotationVelocity).negate().scale(0.95f);
+			}
+			else {
+				friction.set(rotationVelocity).negate().scale((1f / ControlSettings.mouseSensitivity.getValue()));
+			}
 			Vector3f.add(rotationVelocity, friction, rotationVelocity);
-//			if (rotationVelocity.lengthSquared() < MIN_VELOCITY) rotationVelocity.set(0, 0, 0);
-		}
-		
-		if (rotationAcceleration.lengthSquared() == 0) {
-			rotationVelocity.set(0, 0, 0);
+			if (rotationVelocity.lengthSquared() < MIN_VELOCITY) rotationVelocity.set(0, 0, 0);
 		}
 		
 		rotation.y += rotationVelocity.x;
